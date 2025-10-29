@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import LoginPage from './login/page'
+import LoginPage from './register2/page'
 import Navbar from '@/components/Navbar'
 
 import Image from 'next/image'
