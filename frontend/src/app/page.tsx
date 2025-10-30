@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import LoginPage from './register2/page'
-import Navbar from '@/components/Navbar'
-
 import Image from 'next/image'
+import Navbar from '../components/Navbar'
 
 export default function Home() {
   return (
