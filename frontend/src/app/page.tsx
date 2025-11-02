@@ -10,7 +10,6 @@ export default function Home() {
         <Navbar />
       </nav>
       <Image src="/bg.png" alt="bg" width={1440} height={668} />
-      {/* psdavgej */}
     </div>
   )
 }
