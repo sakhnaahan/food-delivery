@@ -2,6 +2,7 @@ export { loginUser, registerUser }
 
 import bcrypt from 'bcrypt'
 import { usersSchema } from '../models/users.js'
+import jwt from 'jsonwebtoken'
 
 export const signUp = async (req, res) => {
   try {
@@ -29,7 +30,7 @@ export const updateUsers = async (req, res) => {
 
     res.status(200).send({ result })
   } catch (error) {
-    res.status(500).send(error, 'errr')
+    res.status(500).send(error, 'error')
   }
 }
 
@@ -38,7 +39,7 @@ export const getUsers = async (req, res) => {
     const result = await usersSchema.find()
     res.status(200).send(result)
   } catch (error) {
-    res.status(500).send(error, 'erro')
+    res.status(500).send(error, 'error')
   }
 }
 
@@ -64,18 +65,30 @@ export const login = async (req, res) => {
     const user = await usersSchema.findOne({ email })
 
     if (!user.length) {
-      res.status(500).send('ali deerin sign up hiisen bn')
+      res.status(500).send('#')
     }
 
     const isPasswordCorrect = bcrypt.compareSync(password, user.password)
 
     if (!isPasswordCorrect) {
-      res.status(403).send({ message: 'password is wrong' })
+      res.status(403).send({ message: 'password is wrong try again' })
     }
 
     res.status(200).send({ message: 'success', data: user })
   } catch (error) {
     console.error(error)
     res.status(500).send({ message: 'Error', data: error })
+  }
+}
+
+export const getUserById = async (req, res) => {
+  try {
+    jwt.sign({ name: 'John', age: 20 }, 'secret', { expiresIn: '1h' })
+    const result = await User.findById(req.params.id)
+
+    req.send(result)
+  } catch (error) {
+    console.log(error)
+    res.send(error)
   }
 }
