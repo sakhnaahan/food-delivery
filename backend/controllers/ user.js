@@ -83,7 +83,9 @@ export const login = async (req, res) => {
 
 export const getUserById = async (req, res) => {
   try {
-    jwt.sign({ name: 'John', age: 20 }, 'secret', { expiresIn: '1h' })
+    const token = jwt.sign({ name: 'John', age: 20 }, 'secret', { expiresIn: '1h' })
+    console.log(token, 'token');
+    
     const result = await User.findById(req.params.id)
 
     req.send(result)
