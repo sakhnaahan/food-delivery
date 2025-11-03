@@ -1,77 +1,81 @@
-import userModal from '../models/userModel.js'
-import jwt from 'jsonwebtoken'
+export { loginUser, registerUser }
+
 import bcrypt from 'bcrypt'
-import validator from 'validator'
+import { usersSchema } from '../models/users.js'
 
-// login function
-const loginUser = async (req, res) => {
-  const { email, password } = req.body
-
+export const signUp = async (req, res) => {
   try {
-    const user = await userModal.findOne({ email })
-    if (!user) {
-      return res.json({ success: false, message: "User doesn't exist" })
-    }
+    const { body } = req
+    const { email, password } = body
 
-    const isMatch = await bcrypt.compare(password, user.password)
-    if (!isMatch) {
-      return res.json({ success: false, message: 'Invalid Creds' })
-    }
+    const hashedPassword = await bcrypt.hashSync(password, 10)
 
-    const token = createToken(user._id)
-    res.json({ success: true, token })
-  } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: 'Error' })
-  }
-}
-
-// create a token
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET)
-}
-
-// register function
-const registerUser = async (req, res) => {
-  const { username, password, email } = req.body
-
-  try {
-    const exists = await userModal.findOne({ email })
-    if (exists) {
-      return res.json({ success: false, message: 'User Already Exists' })
-    }
-
-    // validation
-    if (!validator.isEmail(email)) {
-      return res.json({ success: false, message: 'Please Enter a valid Email' })
-    }
-
-    if (password.length < 8) {
-      return res.json({
-        success: false,
-        message: 'Please Enter a Strong Password',
-      })
-    }
-
-    // if everything works
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
-
-    // new user
-    const newUser = new userModal({
-      username: username,
-      email: email,
+    const user = await usersSchema.create({
+      email,
       password: hashedPassword,
     })
 
-    const user = await newUser.save()
-
-    const token = createToken(user._id)
-    res.json({ sucess: true, token })
+    res.status(200).send({ message: 'Success', data: user })
   } catch (error) {
-    console.log(error)
-    res.json({ success: false, message: 'Error' })
+    console.error(error)
+    res.status(500).send({ message: 'Error', data: error })
   }
 }
 
-export { loginUser, registerUser }
+export const updateUsers = async (req, res) => {
+  try {
+    const userId = req.params.id
+    const result = await usersSchema.findByIdAndUpdate(userId, req.body)
+
+    res.status(200).send({ result })
+  } catch (error) {
+    res.status(500).send(error, 'errr')
+  }
+}
+
+export const getUsers = async (req, res) => {
+  try {
+    const result = await usersSchema.find()
+    res.status(200).send(result)
+  } catch (error) {
+    res.status(500).send(error, 'erro')
+  }
+}
+
+export const deleteUser = async (req, res) => {
+  try {
+    const deleteUser = await usersSchema.findByIdAndDelete(req.params.id)
+    if (!deleteUser) {
+      return res.status(404).send('no user found')
+    } else {
+      res.send({ message: 'user is deleted', data: deleteUser })
+    }
+  } catch (error) {
+    console.error(error)
+    res.send({ error: 'failed to delete the user' })
+  }
+}
+
+export const login = async (req, res) => {
+  try {
+    const { body } = req
+    const { email, password } = body
+
+    const user = await usersSchema.findOne({ email })
+
+    if (!user.length) {
+      res.status(500).send('ali deerin sign up hiisen bn')
+    }
+
+    const isPasswordCorrect = bcrypt.compareSync(password, user.password)
+
+    if (!isPasswordCorrect) {
+      res.status(403).send({ message: 'password is wrong' })
+    }
+
+    res.status(200).send({ message: 'success', data: user })
+  } catch (error) {
+    console.error(error)
+    res.status(500).send({ message: 'Error', data: error })
+  }
+}
