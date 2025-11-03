@@ -1,7 +1,5 @@
-export { loginUser, registerUser }
-
-import bcrypt from 'bcrypt'
-import { usersSchema } from '../models/users.js'
+import bcrypt from 'bcryptjs'
+import { User } from '../models/users.js'
 import jwt from 'jsonwebtoken'
 
 export const signUp = async (req, res) => {
@@ -64,7 +62,7 @@ export const login = async (req, res) => {
 
     const user = await usersSchema.findOne({ email })
 
-    if (!user.length) {
+    if (!user) {
       res.status(500).send('#')
     }
 
@@ -74,23 +72,27 @@ export const login = async (req, res) => {
       res.status(403).send({ message: 'password is wrong try again' })
     }
 
-    res.status(200).send({ message: 'success', data: user })
+    const token = jwt.sign({ name: 'John', age: 20 }, 'secret', {
+      expiresIn: '1h',
+    })
+
+    res.status(200).send({ message: 'success', data: user, token })
   } catch (error) {
     console.error(error)
     res.status(500).send({ message: 'Error', data: error })
   }
 }
 
+// 
 export const getUserById = async (req, res) => {
   try {
-    const token = jwt.sign({ name: 'John', age: 20 }, 'secret', { expiresIn: '1h' })
-    console.log(token, 'token');
-    
-    const result = await User.findById(req.params.id)
-
-    req.send(result)
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' })
+    }
+    res.status(200).send(user)
   } catch (error) {
-    console.log(error)
-    res.send(error)
+    console.error(error)
+    res.status(500).send({ message: 'Error fetching user', error })
   }
 }

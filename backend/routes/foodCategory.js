@@ -1,14 +1,9 @@
-import { Router } from 'express'
-import {
-  createFoodCategory,
-  deleteFoodcategoryById,
-  getFoodCategory,
-  updateFoodCategory,
-} from '../controller/foodCategory.js'
-export const categoryRoute = Router()
+// import { Router } from 'express'
 
-categoryRoute
-  .post('/', createFoodCategory)
-  .get('/', getFoodCategory)
-  .patch('/:id', updateFoodCategory)
-  .delete('/:id', deleteFoodcategoryById)
+// export const categoryRoute = Router()
+
+// categoryRoute
+//   .post('/', createFoodCategoßy)
+//   .get('/', getFoodCategory)
+//   .patch('/:id', updateFoodCategory)
+//   .delete('/:id', deleteFoodcategoryById)

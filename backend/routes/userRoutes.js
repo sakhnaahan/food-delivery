@@ -5,7 +5,7 @@ import {
   login,
   signUp,
   updateUsers,
-} from '../controller/users.js'
+} from '../controllers/user.js'
 
 export const userRoute = Router()
 
