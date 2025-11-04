@@ -6,3 +6,13 @@ export const connectDB = async () => {
     .then(() => console.log('✅ MongoDB connected'))
     .catch((err) => console.error('MongoDB connection error:', err))
 }
+
+// const mongoose = require('mongoose');
+// const dbURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/yourdbname';
+
+// mongoose.connect(dbURI, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// })
+//     .then(() => console.log('MongoDB connected'))
+//     .catch(err => console.error('MongoDB connection error:', err));
