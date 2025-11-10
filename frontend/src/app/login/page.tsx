@@ -1,7 +1,12 @@
 import Image from 'next/image'
 import React from 'react'
+import { useState } from 'react'
 
 const page = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('25')
+
+
   return (
     <div className="w-full max-w-[1440px] bg-white h-screen flex items-center justify-center gap-10">
       <div className="max-w-[416px] gap-6 flex flex-col">
